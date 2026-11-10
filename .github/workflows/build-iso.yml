@@ -47,14 +47,27 @@ jobs:
           if [ "$(stat -c %s "$ISO")" -gt 2000000000 ]; then
             split -b 1900M -d -a 1 "$ISO" "$ISO.part"
             rm "$ISO"
-            printf 'The ISO is split in parts. Join them on Windows with:\n  copy /b %s.part0 + %s.part1 %s\n' "$ISO" "$ISO" "$ISO" > HOW-TO-JOIN.txt
+            PARTS=$(ls "$ISO".part* | xargs -n1 basename | paste -sd+ | sed 's/+/ + /g')
+            printf 'The ISO is split into parts because GitHub limits files to 2 GB.\nDownload all parts into one folder, open Command Prompt there and run:\n\n  copy /b %s %s\n' "$PARTS" "$ISO" > HOW-TO-JOIN.txt
           fi
-          echo "tag=v0.2-build-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
 
-      - name: Publish the release
+      - name: Publish release v1.0
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          gh release create "${{ steps.files.outputs.tag }}" kettle-os/out/* \
-            --title "Kettle Linux 0.2 (build ${GITHUB_RUN_NUMBER})" \
-            --notes "Automatic build of Kettle Linux 0.2 \"Rolling Boil\" (Debian 13 + KDE Plasma 6). Download the .iso and boot it in VirtualBox: new VM, type Linux / Debian (64-bit), 4 GB RAM, 2+ CPUs, Graphics: VMSVGA, and enable EFI."
+          # a newer build of 1.0 replaces the old one
+          gh release delete v1.0 --yes --cleanup-tag 2>/dev/null || true
+          gh release create v1.0 kettle-os/out/* \
+            --latest \
+            --title "Kettle Linux 1.0 \"Rolling Boil\"" \
+            --notes "$(cat <<'EOF'
+          The first big Kettle Linux release: Debian 13 with a KDE Plasma 6 desktop, Kettle wallpaper, logo, floating dock, boot and login splash screens, and the Discover app store with Flathub.
+
+          **Boot it in VirtualBox**
+          1. New VM. Type: Linux, Version: Debian (64-bit).
+          2. 4 GB RAM, 2 or more CPUs.
+          3. Display: graphics controller VMSVGA, 128 MB video memory.
+          4. System: tick Enable EFI.
+          5. Attach the .iso as the optical drive and press Start.
+          EOF
+          )"

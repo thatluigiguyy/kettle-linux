@@ -4,10 +4,10 @@ set -e
 
 # ---- Name and version ----
 cat > /usr/lib/os-release <<'EOF'
-PRETTY_NAME="Kettle Linux 0.2 (Rolling Boil)"
+PRETTY_NAME="Kettle Linux 1.0 (Rolling Boil)"
 NAME="Kettle Linux"
-VERSION_ID="0.2"
-VERSION="0.2 (Rolling Boil)"
+VERSION_ID="1.0"
+VERSION="1.0 (Rolling Boil)"
 VERSION_CODENAME=rollingboil
 ID=kettle
 ID_LIKE=debian
@@ -15,8 +15,8 @@ LOGO=kettle-logo
 ANSI_COLOR="1;33"
 EOF
 echo "kettle" > /etc/hostname
-printf 'Kettle Linux 0.2 \\n \\l\n\n' > /etc/issue
-echo "Kettle Linux 0.2" > /etc/issue.net
+printf 'Kettle Linux 1.0 \\n \\l\n\n' > /etc/issue
+echo "Kettle Linux 1.0" > /etc/issue.net
 
 # ---- The kettle command and a Kettle-coloured shell prompt ----
 chmod 755 /usr/local/bin/kettle

@@ -11,8 +11,8 @@ lb config noauto \
     --bootappend-live "boot=live components quiet splash hostname=kettle username=kettle user-fullname=Kettle locales=en_US.UTF-8" \
     --iso-application "Kettle Linux" \
     --iso-publisher "Kettle Linux" \
-    --iso-volume "KETTLE_0_2" \
-    --image-name "kettle-linux-0.2" \
+    --iso-volume "KETTLE_1_0" \
+    --image-name "kettle-linux-1.0" \
     --memtest none \
     --firmware-chroot false \
     --firmware-binary false \

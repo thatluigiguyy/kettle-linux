@@ -20,7 +20,7 @@ Boot it in VirtualBox:
 
 | Folder | What it is |
 | --- | --- |
-| [`kettle-os/`](kettle-os) | **Kettle Linux 0.2 "Rolling Boil"**: Debian 13 + KDE Plasma 6 with Kettle's own wallpaper, logo, floating dock, splash screens and theme. It's built automatically by GitHub Actions. |
+| [`kettle-os/`](kettle-os) | **Kettle Linux 1.0 "Rolling Boil"**: Debian 13 + KDE Plasma 6 with Kettle's own wallpaper, logo, floating dock, splash screens and theme. It's built automatically by GitHub Actions. |
 | [`rootfs/`](rootfs), `build.ps1` | **Kettle Linux 0.1 "First Boil"**: a tiny Linux (kernel + BusyBox) with a hand-made init system and the `kettle` command. |
 
 ## Building
