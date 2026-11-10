@@ -1,0 +1,12 @@
+# Kettle Linux shell setup (runs for every login shell)
+export PATH=/bin:/sbin:/usr/bin:/usr/sbin
+export HOME=/root
+export TERM=linux
+export PS1='\[\033[1;33m\]\u@\h\[\033[0m\]:\[\033[1;36m\]\w\[\033[0m\]\$ '
+
+alias ll='ls -la'
+alias la='ls -a'
+alias tea='kettle brew'
+
+cd "$HOME"
+cat /etc/motd

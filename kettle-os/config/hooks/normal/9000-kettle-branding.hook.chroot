@@ -1,0 +1,49 @@
+#!/bin/sh
+# Runs inside the new system while it's being built: turns Debian into Kettle.
+set -e
+
+# ---- Name and version ----
+cat > /usr/lib/os-release <<'EOF'
+PRETTY_NAME="Kettle Linux 0.2 (Rolling Boil)"
+NAME="Kettle Linux"
+VERSION_ID="0.2"
+VERSION="0.2 (Rolling Boil)"
+VERSION_CODENAME=rollingboil
+ID=kettle
+ID_LIKE=debian
+LOGO=kettle-logo
+ANSI_COLOR="1;33"
+EOF
+echo "kettle" > /etc/hostname
+printf 'Kettle Linux 0.2 \\n \\l\n\n' > /etc/issue
+echo "Kettle Linux 0.2" > /etc/issue.net
+
+# ---- The kettle command and a Kettle-coloured shell prompt ----
+chmod 755 /usr/local/bin/kettle
+cat >> /etc/skel/.bashrc <<'EOF'
+
+# Kettle Linux prompt
+PS1='\[\e[1;33m\]\u@\h\[\e[0m\]:\[\e[1;36m\]\w\[\e[0m\]\$ '
+alias tea='kettle brew'
+EOF
+
+# ---- Flathub, so Discover can download thousands of apps ----
+flatpak remote-add --if-not-exists --system flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true
+
+# ---- Boot splash: a copy of the 'spinner' theme with the Kettle logo ----
+T=/usr/share/plymouth/themes
+if [ -d "$T/spinner" ] && [ -f /usr/share/kettle/kettle-splash.png ]; then
+    rm -rf "$T/kettle"
+    cp -r "$T/spinner" "$T/kettle"
+    mv "$T/kettle/spinner.plymouth" "$T/kettle/kettle.plymouth"
+    sed -i -e 's/^Name=.*/Name=Kettle/' \
+           -e 's#/spinner#/kettle#g' \
+           -e 's/^BackgroundStartColor=.*/BackgroundStartColor=0x0a0f24/' \
+           -e 's/^BackgroundEndColor=.*/BackgroundEndColor=0x1b1442/' \
+           "$T/kettle/kettle.plymouth"
+    cp /usr/share/kettle/kettle-splash.png "$T/kettle/watermark.png"
+    plymouth-set-default-theme kettle
+fi
+
+# ---- Rebuild the boot files so the splash is included ----
+update-initramfs -u -k all

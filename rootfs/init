@@ -1,0 +1,20 @@
+#!/bin/busybox sh
+# =====================================================================
+#  Kettle Linux - /init
+#  The very first program the Linux kernel runs (PID 1).
+#  It sets up the basic filesystems, then hands over to BusyBox init,
+#  which reads /etc/inittab.
+# =====================================================================
+
+/bin/busybox mkdir -p /proc /sys /dev /tmp /run /sbin /usr/bin /usr/sbin
+/bin/busybox --install -s          # create ls, cat, sh, ... as links to busybox
+
+mount -t proc     proc     /proc
+mount -t sysfs    sysfs    /sys
+mount -t devtmpfs devtmpfs /dev 2>/dev/null || mdev -s
+mkdir -p /dev/pts
+mount -t devpts   devpts   /dev/pts
+mount -t tmpfs    tmpfs    /tmp
+mount -t tmpfs    tmpfs    /run
+
+exec /sbin/init

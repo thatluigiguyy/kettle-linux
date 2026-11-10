@@ -1,0 +1,7 @@
+NAME="Kettle Linux"
+ID=kettle
+VERSION="0.1 (First Boil)"
+VERSION_ID=0.1
+VERSION_CODENAME=firstboil
+PRETTY_NAME="Kettle Linux 0.1 (First Boil)"
+ANSI_COLOR="1;33"

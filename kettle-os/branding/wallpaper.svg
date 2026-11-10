@@ -1,0 +1,86 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 3840 2160" width="3840" height="2160">
+  <!-- Kettle Linux default wallpaper: "Rolling Boil" -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0"    stop-color="#070b1d"/>
+      <stop offset="0.42" stop-color="#17123d"/>
+      <stop offset="0.78" stop-color="#341a47"/>
+      <stop offset="1"    stop-color="#562631"/>
+    </linearGradient>
+    <radialGradient id="ember" cx="3080" cy="2120" r="1750" gradientUnits="userSpaceOnUse">
+      <stop offset="0"    stop-color="#ffb347" stop-opacity="0.85"/>
+      <stop offset="0.32" stop-color="#f0743e" stop-opacity="0.42"/>
+      <stop offset="1"    stop-color="#f0743e" stop-opacity="0"/>
+    </radialGradient>
+    <radialGradient id="cool" cx="420" cy="180" r="1700" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#3fd0c9" stop-opacity="0.30"/>
+      <stop offset="1" stop-color="#3fd0c9" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="ribbonA" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#5b3cff" stop-opacity="0"/>
+      <stop offset="0.45" stop-color="#8f6bff" stop-opacity="0.55"/>
+      <stop offset="1"    stop-color="#ffb347" stop-opacity="0.85"/>
+    </linearGradient>
+    <linearGradient id="ribbonB" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"    stop-color="#3fd0c9" stop-opacity="0.45"/>
+      <stop offset="0.55" stop-color="#b25cff" stop-opacity="0.35"/>
+      <stop offset="1"    stop-color="#ff7a59" stop-opacity="0.6"/>
+    </linearGradient>
+    <linearGradient id="ribbonC" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.6" stop-color="#ffd9a8" stop-opacity="0.35"/>
+      <stop offset="1"   stop-color="#ffffff" stop-opacity="0.1"/>
+    </linearGradient>
+    <linearGradient id="line" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0"   stop-color="#ffffff" stop-opacity="0"/>
+      <stop offset="0.5" stop-color="#ffe2b8" stop-opacity="0.75"/>
+      <stop offset="1"   stop-color="#ffffff" stop-opacity="0.2"/>
+    </linearGradient>
+    <filter id="soft"  x="-10%" y="-50%" width="120%" height="200%"><feGaussianBlur stdDeviation="16"/></filter>
+    <filter id="glow"  x="-10%" y="-50%" width="120%" height="200%"><feGaussianBlur stdDeviation="3"/></filter>
+    <filter id="steam" x="-50%" y="-20%" width="200%" height="140%"><feGaussianBlur stdDeviation="38"/></filter>
+    <filter id="haze"  x="-50%" y="-50%" width="200%" height="200%"><feGaussianBlur stdDeviation="140"/></filter>
+  </defs>
+
+  <!-- sky and light -->
+  <rect width="3840" height="2160" fill="url(#sky)"/>
+  <rect width="3840" height="2160" fill="url(#cool)"/>
+  <rect width="3840" height="2160" fill="url(#ember)"/>
+  <ellipse cx="2350" cy="860"  rx="950" ry="520" fill="#6a3cff" opacity="0.20" filter="url(#haze)"/>
+  <ellipse cx="900"  cy="1700" rx="800" ry="380" fill="#3fd0c9" opacity="0.10" filter="url(#haze)"/>
+
+  <!-- far stars -->
+  <g fill="#ffffff">
+    <circle cx="310"  cy="420" r="3" opacity="0.5"/>  <circle cx="760"  cy="210" r="2" opacity="0.4"/>
+    <circle cx="1180" cy="520" r="2.5" opacity="0.35"/><circle cx="1620" cy="160" r="2" opacity="0.5"/>
+    <circle cx="2080" cy="330" r="3" opacity="0.3"/>  <circle cx="2560" cy="120" r="2" opacity="0.45"/>
+    <circle cx="3010" cy="380" r="2.5" opacity="0.4"/> <circle cx="3480" cy="220" r="3" opacity="0.35"/>
+    <circle cx="3700" cy="640" r="2" opacity="0.3"/>  <circle cx="540"  cy="860" r="2" opacity="0.25"/>
+    <circle cx="1440" cy="900" r="2" opacity="0.2"/>  <circle cx="3320" cy="820" r="2" opacity="0.25"/>
+  </g>
+
+  <!-- rolling ribbons (back to front) -->
+  <path d="M0 1380 C 640 1180, 1260 1640, 1980 1380 S 3160 960, 3840 1120 L 3840 1260 C 3160 1080, 2620 1560, 1980 1540 S 660 1300, 0 1520 Z"
+        fill="url(#ribbonB)" filter="url(#soft)"/>
+  <path d="M0 1600 C 760 1380, 1380 1880, 2140 1600 S 3260 1240, 3840 1420 L 3840 1600 C 3240 1420, 2700 1880, 2100 1840 S 760 1560, 0 1780 Z"
+        fill="url(#ribbonA)" filter="url(#soft)"/>
+  <path d="M0 1860 C 820 1680, 1500 2060, 2300 1840 S 3400 1560, 3840 1700 L 3840 2160 L 0 2160 Z"
+        fill="#0b0a1f" opacity="0.55"/>
+  <path d="M0 1820 C 820 1640, 1500 2020, 2300 1800 S 3400 1520, 3840 1660 L 3840 1720 C 3400 1590, 2900 1900, 2300 1880 S 820 1720, 0 1900 Z"
+        fill="url(#ribbonC)" filter="url(#soft)"/>
+
+  <!-- bright edge lines -->
+  <path d="M0 1600 C 760 1380, 1380 1880, 2140 1600 S 3260 1240, 3840 1420"
+        fill="none" stroke="url(#line)" stroke-width="4" filter="url(#glow)"/>
+  <path d="M0 1380 C 640 1180, 1260 1640, 1980 1380 S 3160 960, 3840 1120"
+        fill="none" stroke="url(#line)" stroke-width="2.5" opacity="0.6" filter="url(#glow)"/>
+  <path d="M0 1820 C 820 1640, 1500 2020, 2300 1800 S 3400 1520, 3840 1660"
+        fill="none" stroke="url(#line)" stroke-width="3" opacity="0.7" filter="url(#glow)"/>
+
+  <!-- rising steam -->
+  <g fill="none" stroke="#ffffff" stroke-linecap="round" filter="url(#steam)">
+    <path d="M2960 1560 C 2860 1320, 3110 1180, 2990 930 S 3060 600, 2960 360"  stroke-width="110" stroke-opacity="0.10"/>
+    <path d="M3180 1500 C 3100 1300, 3300 1160, 3200 960 S 3260 700, 3170 520"  stroke-width="80"  stroke-opacity="0.08"/>
+    <path d="M2760 1600 C 2700 1420, 2860 1300, 2780 1120 S 2820 880, 2750 700" stroke-width="70"  stroke-opacity="0.07"/>
+  </g>
+</svg>

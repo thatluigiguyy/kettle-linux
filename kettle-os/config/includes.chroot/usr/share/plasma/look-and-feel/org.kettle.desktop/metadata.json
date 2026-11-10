@@ -1,0 +1,12 @@
+{
+    "KPlugin": {
+        "Id": "org.kettle.desktop",
+        "Name": "Kettle",
+        "Description": "The Kettle Linux look: dark, warm and floaty",
+        "Authors": [ { "Name": "Kettle Linux" } ],
+        "License": "GPL-2.0+",
+        "Version": "0.2"
+    },
+    "KPackageStructure": "Plasma/LookAndFeel",
+    "X-Plasma-APIVersion": "2"
+}

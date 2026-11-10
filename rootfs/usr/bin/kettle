@@ -1,0 +1,60 @@
+#!/bin/sh
+# kettle - the Kettle Linux system tool
+
+. /etc/os-release
+
+Y='\033[1;33m'; C='\033[1;36m'; G='\033[1;32m'; B='\033[1m'; R='\033[0m'
+
+repeat() {  # repeat CHAR COUNT
+    s=''; i=0
+    while [ "$i" -lt "$2" ]; do s="$s$1"; i=$((i + 1)); done
+    printf '%s' "$s"
+}
+
+cmd_info() {
+    up=$(cut -d. -f1 /proc/uptime)
+    total=$(awk '/MemTotal/ {print int($2/1024)}' /proc/meminfo)
+    avail=$(awk '/MemAvailable/ {print int($2/1024)}' /proc/meminfo)
+    cpu=$(awk -F': ' '/model name/ {print $2; exit}' /proc/cpuinfo)
+    cores=$(grep -c '^processor' /proc/cpuinfo)
+
+    printf "$Y"; cat /etc/kettle/logo; printf "$R\n"
+    printf "  ${C}OS${R}        %s\n"            "$PRETTY_NAME"
+    printf "  ${C}Kernel${R}    Linux %s\n"      "$(uname -r)"
+    printf "  ${C}Host${R}      %s\n"            "$(hostname)"
+    printf "  ${C}Uptime${R}    %dm %ds\n"       $((up / 60)) $((up % 60))
+    printf "  ${C}CPU${R}       %s (%s cores)\n" "$cpu" "$cores"
+    printf "  ${C}Memory${R}    %s MB / %s MB\n" $((total - avail)) "$total"
+    printf "  ${C}Shell${R}     BusyBox ash\n"
+    printf "  ${C}Tools${R}     %s commands\n\n" "$(busybox --list | wc -l)"
+}
+
+cmd_brew() {
+    tea=${1:-black}
+    printf "  ${B}Filling the kettle...${R}\n"
+    usleep 600000
+    t=20
+    while [ "$t" -le 100 ]; do
+        n=$(( (t - 20) / 4 ))
+        printf "\r  Heating [${Y}%s${R}%s] %3dC" "$(repeat '#' $n)" "$(repeat ' ' $((20 - n)))" "$t"
+        usleep 120000
+        t=$((t + 4))
+    done
+    printf "\n\n  ${C}~ ~ ~   W H E E E E E E E E !   ~ ~ ~${R}\n\n"
+    printf "  ${G}Your %s tea is ready. Enjoy!${R}\n\n" "$tea"
+}
+
+cmd_help() {
+    printf "${B}kettle${R} - the Kettle Linux system tool\n\n"
+    printf "  kettle info          show system info\n"
+    printf "  kettle brew [tea]    boil the kettle (try: kettle brew green)\n"
+    printf "  kettle version       show the Kettle version\n"
+    printf "  kettle help          show this help\n\n"
+}
+
+case "$1" in
+    info)    cmd_info ;;
+    brew)    shift; cmd_brew "$@" ;;
+    version) echo "$PRETTY_NAME" ;;
+    *)       cmd_help ;;
+esac

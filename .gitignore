@@ -1,0 +1,7 @@
+# build outputs and downloaded binaries
+build/
+downloads/
+pebbleos/build/
+kettle-os/out/
+*.iso
+*.qcow2

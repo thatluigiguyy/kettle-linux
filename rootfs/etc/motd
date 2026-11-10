@@ -1,0 +1,6 @@
+
+ Welcome to Kettle Linux 0.1 "First Boil"!
+
+ Try:  kettle info     kettle brew     kettle help
+       ls /            busybox --list  poweroff
+

@@ -1,0 +1,45 @@
+# ---- Desktop: KDE Plasma 6 ----
+kde-plasma-desktop
+sddm
+sddm-theme-breeze
+breeze-gtk-theme
+plasma-nm
+plasma-pa
+kde-config-sddm
+kscreen
+
+# ---- Apps that ship with Kettle ----
+konsole
+dolphin
+kate
+ark
+gwenview
+okular
+spectacle
+kcalc
+firefox-esr
+
+# ---- App store: Discover + Flathub ----
+plasma-discover
+plasma-discover-backend-flatpak
+flatpak
+
+# ---- Look ----
+fonts-inter
+fonts-jetbrains-mono
+fonts-noto-color-emoji
+plymouth
+plymouth-themes
+
+# ---- System ----
+network-manager
+pipewire-audio
+sudo
+curl
+git
+nano
+python3
+
+# ---- Runs nicely inside a virtual machine ----
+spice-vdagent
+qemu-guest-agent

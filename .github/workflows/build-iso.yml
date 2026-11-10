@@ -1,0 +1,60 @@
+# Builds the Kettle Linux ISO on GitHub's servers and publishes it as a release.
+name: Build Kettle Linux ISO
+
+on:
+  push:
+    branches: [main]
+    paths: ['kettle-os/**', '.github/workflows/build-iso.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: build-iso
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 150
+    steps:
+      - name: Get the Kettle recipe
+        uses: actions/checkout@v4
+
+      - name: Make room on the build server
+        run: |
+          sudo rm -rf /usr/share/dotnet /usr/local/lib/android /opt/ghc /opt/hostedtoolcache/CodeQL /usr/local/share/boost
+          sudo docker image prune --all --force
+          df -h /
+
+      - name: Build the ISO inside Debian 13
+        run: |
+          docker run --rm --privileged \
+            -v "$GITHUB_WORKSPACE:/src" \
+            -e CI=1 \
+            debian:trixie \
+            bash /src/kettle-os/build.sh
+
+      - name: Prepare release files
+        id: files
+        run: |
+          cd kettle-os/out
+          ls -lh
+          ISO=$(ls *.iso | head -n1)
+          sha256sum "$ISO" > SHA256SUMS.txt
+          # GitHub release files must be under 2 GB: split if needed
+          if [ "$(stat -c %s "$ISO")" -gt 2000000000 ]; then
+            split -b 1900M -d -a 1 "$ISO" "$ISO.part"
+            rm "$ISO"
+            printf 'The ISO is split in parts. Join them on Windows with:\n  copy /b %s.part0 + %s.part1 %s\n' "$ISO" "$ISO" "$ISO" > HOW-TO-JOIN.txt
+          fi
+          echo "tag=v0.2-build-${GITHUB_RUN_NUMBER}" >> "$GITHUB_OUTPUT"
+
+      - name: Publish the release
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${{ steps.files.outputs.tag }}" kettle-os/out/* \
+            --title "Kettle Linux 0.2 (build ${GITHUB_RUN_NUMBER})" \
+            --notes "Automatic build of Kettle Linux 0.2 \"Rolling Boil\" (Debian 13 + KDE Plasma 6). Download the .iso and boot it in VirtualBox: new VM, type Linux / Debian (64-bit), 4 GB RAM, 2+ CPUs, Graphics: VMSVGA, and enable EFI."
