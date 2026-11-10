@@ -14,6 +14,11 @@ ID_LIKE=debian
 LOGO=kettle-logo
 ANSI_COLOR="1;33"
 EOF
+# live-build keeps its own copy in /etc/os-release (made from Debian's at the
+# very start of the build), and that's the one apps read, so replace it too.
+rm -f /etc/os-release
+cp /usr/lib/os-release /etc/os-release
+echo "IMAGE_ID=live" >> /etc/os-release
 echo "kettle" > /etc/hostname
 printf 'Kettle Linux 1.0 \\n \\l\n\n' > /etc/issue
 echo "Kettle Linux 1.0" > /etc/issue.net

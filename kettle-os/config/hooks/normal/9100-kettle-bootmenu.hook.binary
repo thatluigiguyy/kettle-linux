@@ -1,0 +1,38 @@
+#!/bin/sh
+# Runs on the ISO's boot files (cwd = binary/): brands the boot menu and
+# makes it start Kettle automatically after 3 seconds.
+set -e
+
+# ---- UEFI boot menu (GRUB) ----
+if [ -f boot/grub/config.cfg ]; then
+    sed -i '/^set default=0/a set timeout=3\nset timeout_style=menu' boot/grub/config.cfg
+    sed -i '/^insmod play/d; /^play /d' boot/grub/config.cfg          # no beep
+fi
+if [ -f boot/grub/grub.cfg ]; then
+    sed -i -e 's/Live system (amd64 fail-safe mode)/Kettle Linux 1.0 (safe graphics)/' \
+           -e 's/Live system (amd64)/Start Kettle Linux 1.0/' boot/grub/grub.cfg
+fi
+if [ -f boot/grub/live-theme/theme.txt ]; then
+    sed -i -e 's|^title-text:.*|title-text: ""|' \
+           -e 's|item_color = "#a8a8a8"|item_color = "#c9bfe8"|' \
+           -e 's|selected_item_color= "#ffffff"|selected_item_color= "#ffb347"|' \
+           -e 's|fg_color = "#ffffff"|fg_color = "#ffb347"|' \
+           -e 's|bg_color = "#a8a8a8"|bg_color = "#2a2150"|' \
+           -e 's|border_color = "#ffffff"|border_color = "#2a2150"|' \
+           -e 's|text_color = "#000000"|text_color = "#ffffff"|' \
+           boot/grub/live-theme/theme.txt
+fi
+
+# ---- BIOS boot menu (syslinux) ----
+for f in isolinux/isolinux.cfg syslinux/syslinux.cfg; do
+    [ -f "$f" ] && sed -i 's/^timeout 0/timeout 30/' "$f"
+done
+for f in isolinux/live.cfg syslinux/live.cfg; do
+    [ -f "$f" ] && sed -i -e 's/Live system (amd64 fail-safe mode)/Kettle Linux 1.0 (safe graphics)/' \
+                         -e 's/Live system (amd64)/Start Kettle Linux 1.0/' "$f"
+done
+for f in isolinux/menu.cfg syslinux/menu.cfg; do
+    [ -f "$f" ] && sed -i 's/^menu title .*/menu title Kettle Linux/' "$f"
+done
+
+exit 0

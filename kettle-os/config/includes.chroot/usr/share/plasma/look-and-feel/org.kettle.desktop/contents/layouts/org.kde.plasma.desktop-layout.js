@@ -35,7 +35,7 @@ tasks.writeConfig("launchers", [
     "applications:org.kde.kate.desktop",
     "applications:org.kde.discover.desktop",
     "applications:systemsettings.desktop"
-].join(","));
+]); // must be a real list: a comma-joined string becomes one broken launcher
 
 panel.addWidget("org.kde.plasma.marginsseparator");
 panel.addWidget("org.kde.plasma.systemtray");
