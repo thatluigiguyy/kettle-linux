@@ -39,12 +39,13 @@ jobs:
       - name: Prepare release files
         id: files
         run: |
+          sudo chown -R "$(id -u):$(id -g)" kettle-os/out   # Docker created it as root
           cd kettle-os/out
           ls -lh
           ISO=$(ls *.iso | head -n1)
           sha256sum "$ISO" > SHA256SUMS.txt
           # GitHub release files must be under 2 GB: split if needed
-          if [ "$(stat -c %s "$ISO")" -gt 2000000000 ]; then
+          if [ "$(stat -c %s "$ISO")" -gt 2140000000 ]; then
             split -b 1900M -d -a 1 "$ISO" "$ISO.part"
             rm "$ISO"
             PARTS=$(ls "$ISO".part* | xargs -n1 basename | paste -sd+ | sed 's/+/ + /g')
