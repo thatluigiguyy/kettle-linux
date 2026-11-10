@@ -1,0 +1,3 @@
+#!/bin/sh
+# Kettle Linux: launches Kettle Studio
+exec python3 /usr/lib/kettle/studio.py "$@"

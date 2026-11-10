@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Kettle Studio
+GenericName=App Maker
+Comment=Make your own apps and watch them update as you type
+Exec=kettle-studio
+Icon=kettle-studio
+Terminal=false
+Categories=Development;IDE;Kettle;
+Keywords=code;program;app;qml;make;create;
+StartupWMClass=Kettle Studio

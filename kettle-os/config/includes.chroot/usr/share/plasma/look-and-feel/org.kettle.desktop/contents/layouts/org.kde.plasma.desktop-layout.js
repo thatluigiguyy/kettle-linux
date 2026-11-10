@@ -33,6 +33,8 @@ tasks.writeConfig("launchers", [
     "applications:firefox-esr.desktop",
     "applications:org.kde.konsole.desktop",
     "applications:org.kde.kate.desktop",
+    "applications:org.kettle.studio.desktop",
+    "applications:org.kettle.store.desktop",
     "applications:org.kde.discover.desktop",
     "applications:systemsettings.desktop"
 ]); // must be a real list: a comma-joined string becomes one broken launcher

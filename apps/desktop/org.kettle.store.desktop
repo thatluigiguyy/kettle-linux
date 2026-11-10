@@ -1,0 +1,11 @@
+[Desktop Entry]
+Type=Application
+Name=Kettle Store
+GenericName=App Store
+Comment=Install and remix apps made with Kettle Studio
+Exec=kettle-store
+Icon=kettle-store
+Terminal=false
+Categories=System;PackageManager;Kettle;
+Keywords=apps;store;download;install;
+StartupWMClass=Kettle Store

@@ -21,7 +21,14 @@ Boot it in VirtualBox:
 | Folder | What it is |
 | --- | --- |
 | [`kettle-os/`](kettle-os) | **Kettle Linux 1.0 "Rolling Boil"**: Debian 13 + KDE Plasma 6 with Kettle's own wallpaper, logo, floating dock, splash screens and theme. It's built automatically by GitHub Actions. |
+| [`apps/`](apps) | **Kettle Studio**, an app maker with a code editor and a live preview that updates as you type, and the **Kettle Store**, where you install and remix apps other people published. |
 | [`rootfs/`](rootfs), `build.ps1` | **Kettle Linux 0.1 "First Boil"**: a tiny Linux (kernel + BusyBox) with a hand-made init system and the `kettle` command. |
+
+## Making and sharing apps
+
+Open **Kettle Studio** from the dock, pick a template (Hello, Counter, Clock, Paint, Tea Timer or Blank) and start typing. The preview on the right updates as you go. Kettle apps are written in [QML](https://doc.qt.io/qt-6/qmlapplications.html), the same language KDE apps use.
+
+To share an app, press **Publish**. It goes to `github.com/<you>/kettle-app-<name>` with the topic `kettle-app`, and every app with that topic shows up in the **Kettle Store**. There, anyone can install it, open it, or **Remix** it into their own copy.
 
 ## Building
 

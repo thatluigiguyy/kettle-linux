@@ -45,6 +45,16 @@ cp "$WORK/branding/kettle-logo.svg" "$INC/usr/share/icons/hicolor/scalable/apps/
 cp "$WORK/branding/kettle-logo.svg" "$INC/usr/share/pixmaps/kettle-logo.svg"
 rsvg-convert -w 160 -h 160 "$WORK/branding/kettle-logo.svg" -o "$INC/usr/share/kettle/kettle-splash.png"
 
+step "Adding Kettle Studio and the Kettle Store"
+APPS="$SRC/../apps"
+install -d "$INC/usr/lib/kettle" "$INC/usr/bin" "$INC/usr/share/applications" \
+           "$INC/usr/share/icons/hicolor/scalable/apps"
+install -m 644 "$APPS"/kettle/*.py          "$INC/usr/lib/kettle/"
+install -m 755 "$APPS"/bin/*                "$INC/usr/bin/"
+install -m 644 "$APPS"/desktop/*.desktop    "$INC/usr/share/applications/"
+install -m 644 "$APPS"/icons/*.svg          "$INC/usr/share/icons/hicolor/scalable/apps/"
+sed -i 's/\r$//' "$INC"/usr/lib/kettle/*.py "$INC"/usr/bin/kettle-* "$INC"/usr/share/applications/org.kettle.*
+
 step "Building the ISO (grab a cup of tea...)"
 cd "$WORK"
 sudo lb clean

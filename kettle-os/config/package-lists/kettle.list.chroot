@@ -24,6 +24,24 @@ plasma-discover
 plasma-discover-backend-flatpak
 flatpak
 
+# ---- Kettle Studio + Kettle Store (Python + Qt Quick, publishing with GitHub) ----
+python3-pyside6.qtcore
+python3-pyside6.qtgui
+python3-pyside6.qtwidgets
+python3-pyside6.qtqml
+python3-pyside6.qtquick
+python3-pyside6.qtquickwidgets
+python3-pyside6.qtquickcontrols2
+python3-pyside6.qtsvg
+qml6-module-qtquick-controls
+qml6-module-qtquick-layouts
+qml6-module-qtquick-window
+qml6-module-qtqml-workerscript
+qml6-module-qtquick-templates
+qml6-module-qtquick-shapes
+qml6-module-qtquick-effects
+gh
+
 # ---- Look ----
 fonts-inter
 fonts-jetbrains-mono

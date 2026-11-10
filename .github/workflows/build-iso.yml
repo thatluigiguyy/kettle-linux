@@ -4,7 +4,7 @@ name: Build Kettle Linux ISO
 on:
   push:
     branches: [main]
-    paths: ['kettle-os/**', '.github/workflows/build-iso.yml']
+    paths: ['kettle-os/**', 'apps/**', '.github/workflows/build-iso.yml']
   workflow_dispatch:
 
 permissions:

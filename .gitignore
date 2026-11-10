@@ -4,3 +4,4 @@ downloads/
 kettle-os/out/
 *.iso
 *.qcow2
+__pycache__/
