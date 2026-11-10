@@ -20,7 +20,7 @@ jobs:
     timeout-minutes: 150
     steps:
       - name: Get the Kettle recipe
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Make room on the build server
         run: |
