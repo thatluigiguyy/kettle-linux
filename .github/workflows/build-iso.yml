@@ -1,10 +1,9 @@
 # Builds the Kettle Linux ISO on GitHub's servers and publishes it as a release.
 name: Build Kettle Linux ISO
 
+# Only builds when started by hand (Actions tab > Build Kettle Linux ISO > Run workflow),
+# so uploading code or apps never replaces the release by surprise.
 on:
-  push:
-    branches: [main]
-    paths: ['kettle-os/**', 'apps/**', '.github/workflows/build-iso.yml']
   workflow_dispatch:
 
 permissions:
