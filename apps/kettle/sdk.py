@@ -152,11 +152,19 @@ def write_wav(path, samples):
 
 # ----------------------------------------------------------- player --
 
+MAX_NOTES = 6        # how many short sounds may play at once
+
+
 class Player:
-    """Plays WAV files with whatever the computer has (PipeWire on Kettle)."""
+    """Plays WAV files with whatever the computer has (PipeWire on Kettle).
+
+    Every sound is killed shortly after it should have ended, so a stuck sound card
+    (it happens in virtual machines) can't pile up players that never stop.
+    """
 
     def __init__(self):
         self.song = None
+        self.notes = []
 
     @staticmethod
     def _command(path):
@@ -165,7 +173,12 @@ class Player:
                 return cmd
         return None
 
-    def play(self, path, song=False):
+    @staticmethod
+    def _kill(proc):
+        if proc and proc.poll() is None:
+            proc.kill()
+
+    def play(self, path, song=False, seconds=1.0):
         if sys.platform == "win32":
             import winsound
             winsound.PlaySound(str(path), winsound.SND_FILENAME | winsound.SND_ASYNC)
@@ -173,19 +186,31 @@ class Player:
         cmd = self._command(path)
         if not cmd:
             return None
-        proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
         if song:
             self.stop()
+        proc = subprocess.Popen(cmd, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        if song:
             self.song = proc
+        else:
+            self.notes = [p for p in self.notes if p.poll() is None]
+            while len(self.notes) >= MAX_NOTES:
+                self._kill(self.notes.pop(0))
+            self.notes.append(proc)
+        # safety net: never let a sound outlive its length by more than a second
+        timer = threading.Timer(seconds + 1.0, self._kill, args=(proc,))
+        timer.daemon = True
+        timer.start()
         return proc
 
     def stop(self):
         if sys.platform == "win32":
             import winsound
             winsound.PlaySound(None, 0)
-        if self.song and self.song.poll() is None:
-            self.song.terminate()
+        self._kill(self.song)
         self.song = None
+        for p in self.notes:
+            self._kill(p)
+        self.notes = []
 
 
 # -------------------------------------------------------------- SDK --
@@ -213,7 +238,7 @@ class KettleSDK(QObject):
         path = TMP / f"note-{inst}-{int(pitch)}.wav"
         if not path.exists():
             write_wav(path, tone(pitch, inst))
-        self.player.play(path)
+        self.player.play(path, seconds=0.8)
 
     @Slot(str)
     def playDrum(self, kind):
@@ -222,7 +247,7 @@ class KettleSDK(QObject):
         path = TMP / f"drum-{kind}.wav"
         if not path.exists():
             write_wav(path, drum(kind))
-        self.player.play(path)
+        self.player.play(path, seconds=0.4)
 
     @Slot(str)
     def playSong(self, song_json):
@@ -234,7 +259,7 @@ class KettleSDK(QObject):
             if my_id != self._song_id:        # stop was pressed while mixing
                 return
             path = write_wav(TMP / "song.wav", pcm)
-            proc = self.player.play(path, song=True)
+            proc = self.player.play(path, song=True, seconds=len(pcm) / RATE)
             self.playbackStarted.emit(int(seconds * 1000))
             if proc:
                 proc.wait()
