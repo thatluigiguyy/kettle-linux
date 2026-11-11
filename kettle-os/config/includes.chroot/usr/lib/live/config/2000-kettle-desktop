@@ -1,0 +1,16 @@
+#!/bin/sh
+# live-config: runs at every live boot (never on an installed Kettle).
+# Puts Kettle Studio, the Kettle Store and Files on the live user's desktop
+# (the "Install Kettle Linux" icon is added by the installer's own autostart).
+
+HOME_DIR="$(getent passwd 1000 | cut -d: -f6)"
+[ -n "$HOME_DIR" ] && [ -d "$HOME_DIR" ] || exit 0
+
+mkdir -p "$HOME_DIR/Desktop"
+for app in org.kettle.studio org.kettle.store org.kde.dolphin; do
+    src="/usr/share/applications/$app.desktop"
+    [ -f "$src" ] || continue
+    cp "$src" "$HOME_DIR/Desktop/$app.desktop"
+    chmod 755 "$HOME_DIR/Desktop/$app.desktop"
+done
+chown -R 1000:1000 "$HOME_DIR/Desktop"

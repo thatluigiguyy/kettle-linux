@@ -284,6 +284,81 @@ def publish(app, user, log):
     return f"https://github.com/{user}/{repo}"
 
 
+# ------------------------------------------- Popular apps (Flathub) --
+
+FLATHUB_REPO = "https://dl.flathub.org/repo/flathub.flatpakrepo"
+GPU_NOTE = " Needs a real graphics card, so it won't run well inside a virtual machine."
+
+# (Flathub id, name, emoji, description, section)
+POPULAR = [
+    ("com.valvesoftware.Steam", "Steam", "\U0001F3AE",
+     "Thousands of games, like Counter-Strike 2, Geometry Dash and Among Us." + GPU_NOTE, "Games"),
+    ("org.prismlauncher.PrismLauncher", "Minecraft (Prism Launcher)", "⛏️",
+     "Play Minecraft: Java Edition with your Microsoft account." + GPU_NOTE, "Games"),
+    ("com.heroicgameslauncher.hgl", "Heroic Games Launcher", "\U0001F6E1️",
+     "Play your Epic Games and GOG games, including the free ones." + GPU_NOTE, "Games"),
+    ("net.supertuxkart.SuperTuxKart", "SuperTuxKart", "\U0001F3CE️",
+     "Free 3D kart racing with Tux and friends.", "Games"),
+    ("com.discordapp.Discord", "Discord", "\U0001F4AC", "Chat and call with your friends.", "Chat, music & web"),
+    ("com.spotify.Client", "Spotify", "\U0001F3B5", "Millions of songs and podcasts.", "Chat, music & web"),
+    ("com.google.Chrome", "Google Chrome", "\U0001F310", "Google's web browser.", "Chat, music & web"),
+    ("org.mozilla.Thunderbird", "Thunderbird", "✉️", "Email and calendar.", "Chat, music & web"),
+    ("org.libreoffice.LibreOffice", "LibreOffice", "\U0001F4C4",
+     "Documents, spreadsheets and slides. Opens Microsoft Office files.", "Work"),
+    ("org.videolan.VLC", "VLC", "\U0001F3AC", "Plays almost any video or music file.", "Work"),
+    ("com.visualstudio.code", "Visual Studio Code", "\U0001F4BB", "A powerful code editor.", "Create"),
+    ("org.gimp.GIMP", "GIMP", "\U0001F5BC️", "Edit photos and pictures.", "Create"),
+    ("org.kde.krita", "Krita", "\U0001F58C️", "Digital painting and drawing.", "Create"),
+    ("com.obsproject.Studio", "OBS Studio", "\U0001F534", "Record and stream your screen.", "Create"),
+    ("org.blender.Blender", "Blender", "\U0001F9CA", "3D modelling and animation.", "Create"),
+]
+
+
+def is_live_session():
+    """True when Kettle is running from the ISO (nothing is kept after shutdown)."""
+    try:
+        return "boot=live" in Path("/proc/cmdline").read_text()
+    except OSError:
+        return False
+
+
+def flatpak_available():
+    return shutil.which("flatpak") is not None
+
+
+def flatpak_installed():
+    if not flatpak_available():
+        return set()
+    res = subprocess.run(["flatpak", "list", "--app", "--columns=application"],
+                         capture_output=True, text=True)
+    return set(res.stdout.split())
+
+
+def flatpak_install(app_id, log):
+    _run(["flatpak", "remote-add", "--user", "--if-not-exists", "flathub", FLATHUB_REPO], log=log)
+    proc = subprocess.Popen(["flatpak", "install", "--user", "-y", "--noninteractive",
+                             "flathub", app_id],
+                            stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True)
+    last = ""
+    for line in proc.stdout:          # flatpak updates its progress with \r, which splits lines
+        line = line.strip()
+        if line:
+            last = line
+            log(line)
+    if proc.wait() != 0:
+        raise StepFailed(last or "flatpak install failed")
+    return app_id
+
+
+def flatpak_uninstall(app_id, log=None):
+    _run(["flatpak", "uninstall", "-y", "--noninteractive", app_id], log=log)
+    return app_id
+
+
+def flatpak_run(app_id):
+    return subprocess.Popen(["flatpak", "run", app_id])
+
+
 # -------------------------------------------------------------- Store --
 
 def http_get(url, timeout=20, limit=MAX_DOWNLOAD):

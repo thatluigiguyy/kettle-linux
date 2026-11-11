@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Kettle VM speed-up
+Comment=Turns off heavy effects when Kettle runs in a virtual machine
+Exec=/usr/lib/kettle/vm-tune.sh
+NoDisplay=true
+X-KDE-autostart-phase=1
+OnlyShowIn=KDE;

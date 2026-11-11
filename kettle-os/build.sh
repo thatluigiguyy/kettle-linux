@@ -45,6 +45,12 @@ cp "$WORK/branding/kettle-logo.svg" "$INC/usr/share/icons/hicolor/scalable/apps/
 cp "$WORK/branding/kettle-logo.svg" "$INC/usr/share/pixmaps/kettle-logo.svg"
 rsvg-convert -w 160 -h 160 "$WORK/branding/kettle-logo.svg" -o "$INC/usr/share/kettle/kettle-splash.png"
 
+# installer (Calamares) branding: copied into /etc/calamares by the chroot hook
+mkdir -p "$INC/usr/share/kettle/installer"
+cp "$WORK/branding/installer/branding.desc" "$WORK/branding/installer/show.qml" "$INC/usr/share/kettle/installer/"
+rsvg-convert -w 256 -h 256 "$WORK/branding/kettle-logo.svg" -o "$INC/usr/share/kettle/installer/kettle-logo.png"
+rsvg-convert -w 640 -h 480 "$WORK/config/bootloaders/splash.svg" -o "$INC/usr/share/kettle/installer/welcome.png"
+
 step "Adding Kettle Studio and the Kettle Store"
 APPS="$SRC/../apps"
 install -d "$INC/usr/lib/kettle" "$INC/usr/bin" "$INC/usr/share/applications" \

@@ -19,6 +19,25 @@ kde-spectacle
 kcalc
 firefox-esr
 
+# ---- Games that come with Kettle ----
+kmines
+kpat
+kmahjongg
+ksudoku
+kblocks
+kapman
+kbreakout
+kdiamond
+granatier
+knetwalk
+bomber
+kolf
+klines
+
+# ---- Installer: puts Kettle on a disk so it remembers everything ----
+calamares
+calamares-settings-debian
+
 # ---- App store: Discover + Flathub ----
 plasma-discover
 plasma-discover-backend-flatpak

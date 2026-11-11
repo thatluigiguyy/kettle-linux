@@ -88,6 +88,61 @@ class AppCard(QFrame):
             self._button("Code", lambda: QDesktopServices.openUrl(QUrl(self.entry["url"])))
 
 
+class PopularCard(QFrame):
+    """A well-known app from Flathub: Steam, Minecraft, Discord..."""
+
+    def __init__(self, store, app_id, name, icon, description, installed):
+        super().__init__(objectName="card")
+        self.store, self.app_id, self.name = store, app_id, name
+        self.installed = installed
+        self.search_text = f"{name} {description}".lower()
+
+        emoji = QLabel(icon)
+        emoji.setFixedSize(64, 64)
+        emoji.setAlignment(Qt.AlignCenter)
+        emoji.setStyleSheet("font-size: 34px; background: #262144; border-radius: 14px;")
+        title = QLabel(f"<b style='font-size:15px'>{_esc(name)}</b>")
+        desc = QLabel(_esc(description), objectName="muted")
+        desc.setWordWrap(True)
+        self.status = QLabel("")
+        self.status.setStyleSheet("color: #8f88b8; font-size: 11px;")
+
+        text = QVBoxLayout()
+        text.setSpacing(3)
+        text.addWidget(title)
+        text.addWidget(desc)
+        text.addWidget(self.status)
+
+        self.buttons = QHBoxLayout()
+        row = QHBoxLayout(self)
+        row.setContentsMargins(12, 12, 12, 12)
+        row.setSpacing(14)
+        row.addWidget(emoji, 0, Qt.AlignTop)
+        row.addLayout(text, 1)
+        row.addLayout(self.buttons)
+        self.refresh_buttons()
+
+    def refresh_buttons(self, busy=False):
+        while self.buttons.count():
+            w = self.buttons.takeAt(0).widget()
+            if w:
+                w.deleteLater()
+        if busy:
+            b = QPushButton("Working...", enabled=False)
+            self.buttons.addWidget(b)
+        elif self.installed:
+            for text, slot, kind in (("Open", lambda: common.flatpak_run(self.app_id), "accent"),
+                                     ("Remove", lambda: self.store.flatpak_remove(self), "danger")):
+                b = QPushButton(text, objectName=kind)
+                b.clicked.connect(slot)
+                self.buttons.addWidget(b)
+        else:
+            b = QPushButton("Install", objectName="accent")
+            b.clicked.connect(lambda: self.store.flatpak_add(self))
+            b.setEnabled(common.flatpak_available())
+            self.buttons.addWidget(b)
+
+
 def _esc(text):
     return (text or "").replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
 
@@ -126,12 +181,21 @@ class Store(QMainWindow):
         hl.addLayout(top)
         hl.addWidget(sub)
 
+        if common.is_live_session():
+            warn = QLabel("You're running Kettle live from the ISO, so anything you install is "
+                          "gone after a restart. Use \"Install Kettle Linux\" on the desktop "
+                          "to keep your apps.", objectName="error")
+            warn.setWordWrap(True)
+            hl.addWidget(warn)
+
         self.tabs = QTabWidget()
+        self.popular, self.popular_list = self._page()
         self.discover, self.discover_list = self._page()
         self.installed, self.installed_list = self._page()
-        self.tabs.addTab(self.discover, "Discover")
-        self.tabs.addTab(self.installed, "Installed")
-        self.tabs.currentChanged.connect(lambda i: i == 1 and self.show_installed())
+        self.tabs.addTab(self.popular, "Popular Apps")
+        self.tabs.addTab(self.discover, "Kettle Apps")
+        self.tabs.addTab(self.installed, "My Kettle Apps")
+        self.tabs.currentChanged.connect(lambda i: i == 2 and self.show_installed())
 
         central = QWidget()
         cl = QVBoxLayout(central)
@@ -141,8 +205,55 @@ class Store(QMainWindow):
         cl.addWidget(self.tabs, 1)
         self.setCentralWidget(central)
 
+        self.show_popular()
         self.load()
         self.show_installed()
+
+    # ---- popular apps (Flathub)
+    def show_popular(self):
+        self._clear(self.popular_list)
+        installed = common.flatpak_installed()
+        pos = 0
+        if not common.flatpak_available():
+            note = QLabel("Popular apps install with Flatpak, which comes with Kettle Linux.",
+                          objectName="muted")
+            self.popular_list.insertWidget(pos, note)
+            pos += 1
+        section = None
+        for app_id, name, icon, desc, sec in common.POPULAR:
+            if sec != section:
+                section = sec
+                self.popular_list.insertWidget(pos, QLabel(sec.upper(), objectName="section"))
+                pos += 1
+            card = PopularCard(self, app_id, name, icon, desc, app_id in installed)
+            self.popular_list.insertWidget(pos, card)
+            pos += 1
+
+    def flatpak_add(self, card):
+        card.refresh_buttons(busy=True)
+        card.status.setText("Starting download...")
+        worker = ui.Worker(common.flatpak_install, card.app_id, with_log=True, parent=self)
+        self.workers.append(worker)
+        worker.log.connect(lambda line: card.status.setText(line[:110]))
+
+        def done(_, error):
+            self.workers.remove(worker)
+            card.installed = error is None
+            card.status.setText(f"Couldn't install: {error[-200:]}" if error else "Installed!")
+            card.refresh_buttons()
+        worker.done.connect(done)
+        worker.start()
+
+    def flatpak_remove(self, card):
+        if QMessageBox.question(self, "Remove app?", f"Remove {card.name}?") != QMessageBox.Yes:
+            return
+        card.refresh_buttons(busy=True)
+
+        def done(_, error):
+            card.installed = error is not None
+            card.status.setText(f"Couldn't remove: {error[-200:]}" if error else "Removed")
+            card.refresh_buttons()
+        self._run(common.flatpak_uninstall, card.app_id, done=done)
 
     def _page(self):
         scroll = QScrollArea()
@@ -208,10 +319,10 @@ class Store(QMainWindow):
 
     def filter(self, text):
         text = text.lower().strip()
-        for layout in (self.discover_list, self.installed_list):
+        for layout in (self.popular_list, self.discover_list, self.installed_list):
             for i in range(layout.count()):
                 w = layout.itemAt(i).widget()
-                if isinstance(w, AppCard):
+                if isinstance(w, (AppCard, PopularCard)):
                     w.setVisible(not text or text in w.search_text)
 
     # ---- installed

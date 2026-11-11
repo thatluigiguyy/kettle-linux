@@ -50,5 +50,24 @@ if [ -d "$T/spinner" ] && [ -f /usr/share/kettle/kettle-splash.png ]; then
     plymouth-set-default-theme kettle
 fi
 
+# ---- Installer: Kettle branding for Calamares ----
+B=/etc/calamares/branding
+if [ -d "$B/debian" ] && [ -d /usr/share/kettle/installer ]; then
+    rm -rf "$B/kettle"
+    mkdir -p "$B/kettle"
+    cp /usr/share/kettle/installer/* "$B/kettle/"
+    sed -i 's/^branding:.*/branding: kettle/' /etc/calamares/settings.conf
+fi
+# Debian's own live-session autostart copies this launcher onto the desktop
+for f in /usr/share/applications/calamares-install-debian.desktop; do
+    [ -f "$f" ] || continue
+    sed -i -e 's/^Name=.*/Name=Install Kettle Linux/' \
+           -e 's/^Name\[[^]]*\]=.*//' \
+           -e 's/^Comment=.*/Comment=Put Kettle on your disk so it remembers everything/' \
+           -e 's/^Comment\[[^]]*\]=.*//' \
+           -e 's/^Icon=.*/Icon=kettle-logo/' "$f"
+done
+chmod 755 /usr/lib/live/config/2000-kettle-desktop /usr/lib/kettle/vm-tune.sh
+
 # ---- Rebuild the boot files so the splash is included ----
 update-initramfs -u -k all

@@ -1,0 +1,43 @@
+---
+# Calamares installer branding for Kettle Linux
+componentName:  kettle
+
+welcomeStyleCalamares:   true
+welcomeExpandingLogo:    true
+windowExpanding:    normal
+windowSize: 860px,580px
+windowPlacement: center
+sidebar: widget
+navigation: widget
+
+strings:
+    productName:         "Kettle Linux"
+    shortProductName:    "Kettle"
+    version:             "1.0"
+    shortVersion:        "1.0"
+    versionedName:       "Kettle Linux 1.0"
+    shortVersionedName:  "Kettle 1.0"
+    bootloaderEntryName: "Kettle"
+    productUrl:          "https://github.com/thatluigiguyy/kettle-linux"
+    supportUrl:          "https://github.com/thatluigiguyy/kettle-linux/issues"
+    releaseNotesUrl:     "https://github.com/thatluigiguyy/kettle-linux/releases"
+
+images:
+    productLogo:         "kettle-logo.png"
+    productIcon:         "kettle-logo.png"
+    productWelcome:      "welcome.png"
+
+slideshow:               "show.qml"
+slideshowAPI:            2
+
+style:
+    # Calamares 3.3 names
+    SidebarBackground:        "#17142b"
+    SidebarText:              "#ece8ff"
+    SidebarTextCurrent:       "#1b1030"
+    SidebarBackgroundCurrent: "#ffb347"
+    # older names, harmless if unused
+    sidebarBackground:    "#17142b"
+    sidebarText:          "#ece8ff"
+    sidebarTextSelect:    "#1b1030"
+    sidebarTextHighlight: "#ffb347"
