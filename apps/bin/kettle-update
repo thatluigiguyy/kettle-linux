@@ -1,0 +1,3 @@
+#!/bin/sh
+# Kettle Linux: get the newest Kettle Studio, Kettle Store and Kettle SDK from GitHub
+curl -fsSL https://raw.githubusercontent.com/thatluigiguyy/kettle-linux/main/apps/update.sh | sudo sh

@@ -11,6 +11,7 @@ from PySide6.QtWidgets import QApplication, QMessageBox
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import ui  # noqa: E402
 from common import KettleApp  # noqa: E402
+from sdk import KettleSDK  # noqa: E402
 
 
 def main():
@@ -32,6 +33,8 @@ def main():
     view = QQuickView()
     view.setTitle(app_info.name)
     view.setResizeMode(QQuickView.SizeRootObjectToView)
+    kettle = KettleSDK(app_info.id)          # sounds, song export, saving: see sdk.py
+    view.rootContext().setContextProperty("kettle", kettle)
     view.setSource(QUrl.fromLocalFile(str(app_info.main)))
     if view.status() == QQuickView.Error:
         errors = "\n".join(e.toString() for e in view.errors())

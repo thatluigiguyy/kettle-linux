@@ -17,6 +17,7 @@ from PySide6.QtWidgets import (QApplication, QDialog, QDialogButtonBox, QFormLay
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import common  # noqa: E402
 import ui  # noqa: E402
+from sdk import KettleSDK  # noqa: E402
 from templates import TEMPLATES  # noqa: E402
 
 
@@ -218,6 +219,8 @@ class Preview(QWidget):
 
         self.view = QQuickWidget()
         self.view.setResizeMode(QQuickWidget.SizeRootObjectToView)
+        self.kettle = KettleSDK("preview")       # the same `kettle` helper apps get when run
+        self.view.rootContext().setContextProperty("kettle", self.kettle)
         self.view.setClearColor(QColor("#0c0a18"))
         self.view.engine().warnings.connect(self._warnings)
 
@@ -239,6 +242,8 @@ class Preview(QWidget):
 
     def load(self, path):
         self.path = Path(path)
+        self.kettle.stop()
+        self.kettle.app_id = common.slugify(self.path.parent.name)
         self.reload()
 
     def reload(self):

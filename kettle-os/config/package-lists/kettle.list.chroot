@@ -60,6 +60,7 @@ qml6-module-qtquick-templates
 qml6-module-qtquick-shapes
 qml6-module-qtquick-effects
 gh
+lame
 
 # ---- Look ----
 fonts-inter
