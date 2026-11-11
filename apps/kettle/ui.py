@@ -52,6 +52,8 @@ def set_quick_style():
     """Buttons inside Kettle apps: Plasma's own style on Kettle, Fusion elsewhere."""
     import os
     from PySide6.QtQuickControls2 import QQuickStyle
+    # Qt Quick's default text renderer can't draw colour emoji (they come out black)
+    os.environ.setdefault("QML_DISABLE_DISTANCEFIELD", "1")
     if not os.environ.get("QT_QUICK_CONTROLS_STYLE"):
         QQuickStyle.setStyle("Fusion")
 

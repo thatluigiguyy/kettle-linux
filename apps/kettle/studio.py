@@ -412,8 +412,8 @@ class Studio(QMainWindow):
         self._build_toolbar()
 
         # left: my apps
-        side = QWidget()
-        side.setStyleSheet("background: #141127;")
+        side = QWidget(objectName="side")
+        side.setStyleSheet("#side { background: #141127; }")  # only the panel, not its buttons
         self.apps = QListWidget()
         self.apps.currentItemChanged.connect(self._app_selected)
         new_btn = QPushButton("+  New app", objectName="accent")
